@@ -1,0 +1,43 @@
+<!-- Ring div starts here -->
+<div class="ring">
+  <i style="--clr:#00ff0a;"></i>
+  <i style="--clr:#ff0057;"></i>
+  <i style="--clr:#fffd44;"></i>
+  <div class="login">
+    <h2>Login</h2>
+    <!-- Tambahkan tombol Login with Google -->
+    <div class="inputBx">
+      <input type="text" placeholder="Username">
+    </div>
+    <div class="inputBx">
+      <input type="password" placeholder="Password">
+    </div>
+    <div class="inputBx">
+      <input type="submit" value="Sign in">
+    </div>
+    <div class="links">
+      <a href="https://accounts.google.com/signin/v2/recoveryidentifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin" id="forgot-password-link" target="_blank">Forget Password</a>
+      <a href="#" onclick="redirectSignUp()">Sign up </a>
+    </div>
+    <div class="reset-password-form" style="display: none;">
+      <!-- Formulir untuk reset password -->
+      <input type="email" placeholder="Enter your email">
+      <button>Reset Password</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function loginWithGoogle() {
+    // Redirect ke halaman Google untuk login
+    window.location.href = 'https://accounts.google.com/o/oauth2/auth?response_type=token&client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&scope=email profile openid&state=YOUR_STATE';
+  }
+
+  function redirectSignUp() {
+    // Redirect ke halaman login with Google saat memilih opsi "Sign up"
+    loginWithGoogle();
+  }
+</script>
+
+<link rel="stylesheet" href="login.css">
+<script src="script.js" defer></script>
