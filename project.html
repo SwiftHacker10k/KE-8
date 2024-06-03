@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3,5 Tahun Let's Go</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Gaya untuk navigasi */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animasi latar belakang */
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body {
+            animation: gradient 15s ease infinite;
+            background: linear-gradient(45deg, #ee0979, #ff6a00, #ff6a00, #ee0979);
+            background-size: 400% 400%;
+        }
+
+        .container {
+            padding-top: 50px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .btn-icon {
+            padding: 0;
+            border: none;
+            background: none;
+        }
+
+        .btn-icon img {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">MyProject</div>
+        <ul class="nav-links">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="money.html">Money</a></li>
+            <li><a href="project.html">Project</a></li>
+            <li><a href="home.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4">Tugas Yang harus di kerjakan</h2>
+        <form id="project-form">
+            <div class="form-group row">
+                <label for="project-date" class="col-sm-2 col-form-label">Tanggal:</label>
+                <div class="col-sm-10">
+                    <input type="date" id="project-date" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="project-time" class="col-sm-2 col-form-label">Jam:</label>
+                <div class="col-sm-10">
+                    <input type="time" id="project-time" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="project-day" class="col-sm-2 col-form-label">Hari:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="project-day" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="project-file" class="col-sm-2 col-form-label">Nama Proyek:</label>
+                <div class="col-sm-8">
+                    <input type="file" id="project-file" class="form-control-file" required>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-secondary" id="clear-file">Clear</button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah Proyek</button>
+        </form>
+
+        <h2 class="mt-5">Daftar Tugas</h2>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Jam</th>
+                    <th>Hari</th>
+                    <th>Nama Proyek</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="project-info">
+                <!-- Baris akan ditambahkan melalui JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#project-form").submit(function(event) {
+                event.preventDefault();
+
+                var date = $("#project-date").val();
+                var time = $("#project-time").val();
+                var day = $("#project-day").val();
+                var projectName = $("#project-file").prop("files")[0].name;
+
+                addProjectRow(date, time, day, projectName);
+
+                // Bersihkan formulir setelah submit
+                $("#project-form")[0].reset();
+            });
+
+            $("#clear-file").click(function() {
+                // Hapus nilai input file
+                $("#project-file").val("");
+            });
+
+            $(document).on("click", ".delete-project", function() {
+                // Hapus baris proyek ketika tombol delete di klik
+                $(this).closest("tr").remove();
+            });
+
+            $(document).on("click", ".print-project", function() {
+                // Cetak baris proyek ketika tombol print di klik
+                var projectName = $(this).closest("tr").find("td:nth-child(4)").text();
+                printFile(projectName);
+            });
+
+            $(document).on("change", "#project-file", function() {
+                var projectName = $(this).prop("files")[0].name;
+                $(this).closest(".form-group").find("label").text("Nama Proyek: " + projectName);
+            });
+
+            function addProjectRow(date, time, day, projectName) {
+                var newRow = `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${time}</td>
+                        <td>${day}</td>
+                        <td>${projectName}</td>
+                        <td>
+                            <button type="button" class="btn-icon print-project">
+                                <img src="https://static.vecteezy.com/system/resources/previews/000/330/028/original/vector-printer-glyph-icon.jpg" alt="Print">
+                            </button>
+                            <button type="button" class="btn-icon delete-project">
+                                <img src="https://static.vecteezy.com/system/resources/previews/000/594/236/original/trash-can-icon-logo-template-illustration-design-vector-eps-10.jpg" alt="Delete">
+                            </button>
+                            <button type="button" class="btn-icon edit-project">
+                                <img src="https://th.bing.com/th/id/OIP.B5oDTZ0TrDDxvvU2gpO6OgHaHa?rs=1&pid=ImgDetMain" alt="Edit">
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $("#project-info").append(newRow);
+            }
+
+            function printFile(fileName) {
+                var newWindow = window.open("", "_blank");
+                newWindow.document.write("<p>" + fileName + "</p>");
+                newWindow.document.close();
+                newWindow.print();
+            }
+        });
+    </script>
+</body>
+</html>
